@@ -250,12 +250,14 @@ void RangeSensorLayer::updateCostmap(sensor_msgs::Range& range_message, bool cle
     return;
   }
 
+  // This next line transforms the origin of the sonar into a global frame and call it ox and oy
   tf_->transformPoint (global_frame_, in, out);
 
   double ox = out.point.x, oy = out.point.y;
 
   in.point.x = range_message.range;
 
+  // This next line transforms the final point of the sonar into a global frame and call it tx and ty
   tf_->transformPoint(global_frame_, in, out);
 
   double tx = out.point.x, ty = out.point.y;
@@ -359,8 +361,8 @@ void RangeSensorLayer::update_cell(double ox, double oy, double ot, double r, do
     double prob_not = (1 - sensor) * (1 - prior);
     double new_prob = prob_occ/(prob_occ+prob_not);
 
-    //ROS_INFO("%f %f | %f %f = %f", dx, dy, theta, phi, sensor);
-    //ROS_INFO("%f | %f %f | %f", prior, prob_occ, prob_not, new_prob);
+    ROS_INFO("%f %f | %f %f = %f", dx, dy, theta, phi, sensor);
+    ROS_INFO("%f | %f %f | %f", prior, prob_occ, prob_not, new_prob);
     unsigned char c = to_cost(new_prob);
     setCost(x,y,c);
   }
